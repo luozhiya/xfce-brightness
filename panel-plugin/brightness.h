@@ -17,8 +17,8 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef __SAMPLE_H__
-#define __SAMPLE_H__
+#ifndef __BRIGHTNESS_H__
+#define __BRIGHTNESS_H__
 
 G_BEGIN_DECLS
 
@@ -32,19 +32,19 @@ typedef struct
     GtkWidget       *hvbox;
     GtkWidget       *label;
 
-    /* sample settings */
+    /* brightness settings */
     gchar           *setting1;
     gint             setting2;
     gboolean         setting3;
 }
-SamplePlugin;
+BrightnessPlugin;
 
 
 
 void
-sample_save (XfcePanelPlugin *plugin,
-             SamplePlugin    *sample);
+brightness_save (XfcePanelPlugin *plugin,
+             BrightnessPlugin    *brightness);
 
 G_END_DECLS
 
-#endif /* !__SAMPLE_H__ */
+#endif /* !__BRIGHTNESS_H__ */

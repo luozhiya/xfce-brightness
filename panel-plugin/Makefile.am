@@ -1,38 +1,38 @@
 AM_CPPFLAGS = \
 	-I$(top_srcdir) \
-	-DG_LOG_DOMAIN=\"xfce4-sample-plugin\" \
+	-DG_LOG_DOMAIN=\"xfce4-brightness-plugin\" \
 	-DPACKAGE_LOCALE_DIR=\"$(localedir)\" \
 	$(PLATFORM_CPPFLAGS)
 
 #
-# Sample plugin
+# brightness plugin
 #
 plugin_LTLIBRARIES = \
-	libsample.la
+	libbrightness.la
 
 plugindir = \
 	$(libdir)/xfce4/panel/plugins
 
-libsample_la_SOURCES = \
-	sample.c \
-	sample.h \
-	sample-dialogs.c \
-	sample-dialogs.h
+libbrightness_la_SOURCES = \
+	brightness.c \
+	brightness.h \
+	brightness-dialogs.c \
+	brightness-dialogs.h
 
-libsample_la_CFLAGS = \
+libbrightness_la_CFLAGS = \
 	$(LIBXFCE4UTIL_CFLAGS) \
 	$(LIBXFCE4UI_CFLAGS) \
 	$(LIBXFCE4PANEL_CFLAGS) \
 	$(PLATFORM_CFLAGS)
 
-libsample_la_LDFLAGS = \
+libbrightness_la_LDFLAGS = \
        -avoid-version \
        -module \
        -no-undefined \
        -export-symbols-regex '^xfce_panel_module_(preinit|init|construct)' \
        $(PLATFORM_LDFLAGS)
 
-libsample_la_LIBADD = \
+libbrightness_la_LIBADD = \
 	$(LIBXFCE4UTIL_LIBS) \
 	$(LIBXFCE4UI_LIBS) \
 	$(LIBXFCE4PANEL_LIBS)
@@ -44,12 +44,12 @@ desktopdir =								\
 	$(datadir)/xfce4/panel/plugins
 
 desktop_DATA =								\
-	sample.desktop
+	brightness.desktop
 
 @INTLTOOL_DESKTOP_RULE@
 
 EXTRA_DIST =								\
-	sample.desktop.in
+	brightness.desktop.in
 
 CLEANFILES =								\
 	$(desktop_DATA)

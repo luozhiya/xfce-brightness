@@ -17,17 +17,17 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef __SAMPLE_DIALOGS_H__
-#define __SAMPLE_DIALOGS_H__
+#ifndef __BRIGHTNESS_DIALOGS_H__
+#define __BRIGHTNESS_DIALOGS_H__
 
 G_BEGIN_DECLS
 
 void
-sample_configure    (XfcePanelPlugin *plugin,
-                     SamplePlugin    *sample);
+brightness_configure    (XfcePanelPlugin *plugin,
+                     BrightnessPlugin    *brightness);
 
 void
-sample_about        (XfcePanelPlugin *plugin);
+brightness_about        (XfcePanelPlugin *plugin);
 
 G_END_DECLS
 

@@ -28,8 +28,8 @@
 #include <libxfce4util/libxfce4util.h>
 #include <libxfce4panel/libxfce4panel.h>
 
-#include "sample.h"
-#include "sample-dialogs.h"
+#include "brightness.h"
+#include "brightness-dialogs.h"
 
 /* default settings */
 #define DEFAULT_SETTING1 NULL
@@ -40,17 +40,17 @@
 
 /* prototypes */
 static void
-sample_construct (XfcePanelPlugin *plugin);
+brightness_construct (XfcePanelPlugin *plugin);
 
 
 /* register the plugin */
-XFCE_PANEL_PLUGIN_REGISTER (sample_construct);
+XFCE_PANEL_PLUGIN_REGISTER (brightness_construct);
 
 
 
 void
-sample_save (XfcePanelPlugin *plugin,
-             SamplePlugin    *sample)
+brightness_save (XfcePanelPlugin *plugin,
+             BrightnessPlugin    *brightness)
 {
   XfceRc *rc;
   gchar  *file;
@@ -72,11 +72,11 @@ sample_save (XfcePanelPlugin *plugin,
     {
       /* save the settings */
       DBG(".");
-      if (sample->setting1)
-        xfce_rc_write_entry    (rc, "setting1", sample->setting1);
+      if (brightness->setting1)
+        xfce_rc_write_entry    (rc, "setting1", brightness->setting1);
 
-      xfce_rc_write_int_entry  (rc, "setting2", sample->setting2);
-      xfce_rc_write_bool_entry (rc, "setting3", sample->setting3);
+      xfce_rc_write_int_entry  (rc, "setting2", brightness->setting2);
+      xfce_rc_write_bool_entry (rc, "setting3", brightness->setting3);
 
       /* close the rc file */
       xfce_rc_close (rc);
@@ -86,14 +86,14 @@ sample_save (XfcePanelPlugin *plugin,
 
 
 static void
-sample_read (SamplePlugin *sample)
+brightness_read (BrightnessPlugin *brightness)
 {
   XfceRc      *rc;
   gchar       *file;
   const gchar *value;
 
   /* get the plugin config file location */
-  file = xfce_panel_plugin_save_location (sample->plugin, TRUE);
+  file = xfce_panel_plugin_save_location (brightness->plugin, TRUE);
 
   if (G_LIKELY (file != NULL))
     {
@@ -107,10 +107,10 @@ sample_read (SamplePlugin *sample)
         {
           /* read the settings */
           value = xfce_rc_read_entry (rc, "setting1", DEFAULT_SETTING1);
-          sample->setting1 = g_strdup (value);
+          brightness->setting1 = g_strdup (value);
 
-          sample->setting2 = xfce_rc_read_int_entry (rc, "setting2", DEFAULT_SETTING2);
-          sample->setting3 = xfce_rc_read_bool_entry (rc, "setting3", DEFAULT_SETTING3);
+          brightness->setting2 = xfce_rc_read_int_entry (rc, "setting2", DEFAULT_SETTING2);
+          brightness->setting3 = xfce_rc_read_bool_entry (rc, "setting3", DEFAULT_SETTING3);
 
           /* cleanup */
           xfce_rc_close (rc);
@@ -123,57 +123,57 @@ sample_read (SamplePlugin *sample)
   /* something went wrong, apply default values */
   DBG ("Applying default settings");
 
-  sample->setting1 = g_strdup (DEFAULT_SETTING1);
-  sample->setting2 = DEFAULT_SETTING2;
-  sample->setting3 = DEFAULT_SETTING3;
+  brightness->setting1 = g_strdup (DEFAULT_SETTING1);
+  brightness->setting2 = DEFAULT_SETTING2;
+  brightness->setting3 = DEFAULT_SETTING3;
 }
 
 
 
-static SamplePlugin *
-sample_new (XfcePanelPlugin *plugin)
+static BrightnessPlugin *
+brightness_new (XfcePanelPlugin *plugin)
 {
-  SamplePlugin   *sample;
+  BrightnessPlugin   *brightness;
   GtkOrientation  orientation;
   GtkWidget      *label;
 
   /* allocate memory for the plugin structure */
-  sample = g_slice_new0 (SamplePlugin);
+  brightness = g_slice_new0 (BrightnessPlugin);
 
   /* pointer to plugin */
-  sample->plugin = plugin;
+  brightness->plugin = plugin;
 
   /* read the user settings */
-  sample_read (sample);
+  brightness_read (brightness);
 
   /* get the current orientation */
   orientation = xfce_panel_plugin_get_orientation (plugin);
 
   /* create some panel widgets */
-  sample->ebox = gtk_event_box_new ();
-  gtk_widget_show (sample->ebox);
+  brightness->ebox = gtk_event_box_new ();
+  gtk_widget_show (brightness->ebox);
 
-  sample->hvbox = gtk_box_new (orientation, 2);
-  gtk_widget_show (sample->hvbox);
-  gtk_container_add (GTK_CONTAINER (sample->ebox), sample->hvbox);
+  brightness->hvbox = gtk_box_new (orientation, 2);
+  gtk_widget_show (brightness->hvbox);
+  gtk_container_add (GTK_CONTAINER (brightness->ebox), brightness->hvbox);
 
-  /* some sample widgets */
-  label = gtk_label_new (_("Sample"));
+  /* some brightness widgets */
+  label = gtk_label_new (_("Brightness"));
   gtk_widget_show (label);
-  gtk_box_pack_start (GTK_BOX (sample->hvbox), label, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (brightness->hvbox), label, FALSE, FALSE, 0);
 
   label = gtk_label_new (_("Plugin"));
   gtk_widget_show (label);
-  gtk_box_pack_start (GTK_BOX (sample->hvbox), label, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (brightness->hvbox), label, FALSE, FALSE, 0);
 
-  return sample;
+  return brightness;
 }
 
 
 
 static void
-sample_free (XfcePanelPlugin *plugin,
-             SamplePlugin    *sample)
+brightness_free (XfcePanelPlugin *plugin,
+             BrightnessPlugin    *brightness)
 {
   GtkWidget *dialog;
 
@@ -183,33 +183,33 @@ sample_free (XfcePanelPlugin *plugin,
     gtk_widget_destroy (dialog);
 
   /* destroy the panel widgets */
-  gtk_widget_destroy (sample->hvbox);
+  gtk_widget_destroy (brightness->hvbox);
 
   /* cleanup the settings */
-  if (G_LIKELY (sample->setting1 != NULL))
-    g_free (sample->setting1);
+  if (G_LIKELY (brightness->setting1 != NULL))
+    g_free (brightness->setting1);
 
   /* free the plugin structure */
-  g_slice_free (SamplePlugin, sample);
+  g_slice_free (BrightnessPlugin, brightness);
 }
 
 
 
 static void
-sample_orientation_changed (XfcePanelPlugin *plugin,
+brightness_orientation_changed (XfcePanelPlugin *plugin,
                             GtkOrientation   orientation,
-                            SamplePlugin    *sample)
+                            BrightnessPlugin    *brightness)
 {
   /* change the orientation of the box */
-  gtk_orientable_set_orientation(GTK_ORIENTABLE(sample->hvbox), orientation);
+  gtk_orientable_set_orientation(GTK_ORIENTABLE(brightness->hvbox), orientation);
 }
 
 
 
 static gboolean
-sample_size_changed (XfcePanelPlugin *plugin,
+brightness_size_changed (XfcePanelPlugin *plugin,
                      gint             size,
-                     SamplePlugin    *sample)
+                     BrightnessPlugin    *brightness)
 {
   GtkOrientation orientation;
 
@@ -229,42 +229,42 @@ sample_size_changed (XfcePanelPlugin *plugin,
 
 
 static void
-sample_construct (XfcePanelPlugin *plugin)
+brightness_construct (XfcePanelPlugin *plugin)
 {
-  SamplePlugin *sample;
+  BrightnessPlugin *brightness;
 
   /* setup transation domain */
   xfce_textdomain(GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR, "UTF-8");
 
   /* create the plugin */
-  sample = sample_new (plugin);
+  brightness = brightness_new (plugin);
 
   /* add the ebox to the panel */
-  gtk_container_add (GTK_CONTAINER (plugin), sample->ebox);
+  gtk_container_add (GTK_CONTAINER (plugin), brightness->ebox);
 
   /* show the panel's right-click menu on this ebox */
-  xfce_panel_plugin_add_action_widget (plugin, sample->ebox);
+  xfce_panel_plugin_add_action_widget (plugin, brightness->ebox);
 
   /* connect plugin signals */
   g_signal_connect (G_OBJECT (plugin), "free-data",
-                    G_CALLBACK (sample_free), sample);
+                    G_CALLBACK (brightness_free), brightness);
 
   g_signal_connect (G_OBJECT (plugin), "save",
-                    G_CALLBACK (sample_save), sample);
+                    G_CALLBACK (brightness_save), brightness);
 
   g_signal_connect (G_OBJECT (plugin), "size-changed",
-                    G_CALLBACK (sample_size_changed), sample);
+                    G_CALLBACK (brightness_size_changed), brightness);
 
   g_signal_connect (G_OBJECT (plugin), "orientation-changed",
-                    G_CALLBACK (sample_orientation_changed), sample);
+                    G_CALLBACK (brightness_orientation_changed), brightness);
 
   /* show the configure menu item and connect signal */
   xfce_panel_plugin_menu_show_configure (plugin);
   g_signal_connect (G_OBJECT (plugin), "configure-plugin",
-                    G_CALLBACK (sample_configure), sample);
+                    G_CALLBACK (brightness_configure), brightness);
 
   /* show the about menu item and connect signal */
   xfce_panel_plugin_menu_show_about (plugin);
   g_signal_connect (G_OBJECT (plugin), "about",
-                    G_CALLBACK (sample_about), NULL);
+                    G_CALLBACK (brightness_about), NULL);
 }
