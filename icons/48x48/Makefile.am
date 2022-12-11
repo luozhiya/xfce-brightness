@@ -2,7 +2,7 @@
 
 iconsdir = $(datadir)/icons/hicolor/48x48/apps
 icons_DATA =								\
-	xfce4-sample-plugin.png
+	xfce4-brightness-plugin.png
 
 EXTRA_DIST =								\
 	$(icons_DATA)
